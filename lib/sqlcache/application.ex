@@ -8,8 +8,7 @@ defmodule Sqlcache.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: Sqlcache.Worker.start_link(arg)
-      # {Sqlcache.Worker, arg}
+      {Sqlcache, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

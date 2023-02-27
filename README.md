@@ -1,6 +1,6 @@
 # Sqlcache
 
-**TODO: Add description**
+Very slim wrapper around `exqlite` to expose a key/value API with namespacing. Useful for local caching
 
 ## Installation
 
