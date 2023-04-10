@@ -1,13 +1,19 @@
 defmodule Sqlcache.MixProject do
   use Mix.Project
+  @github_url "https://github.com/mindreframer/sqlcache"
+  @version "0.1.0"
+  @description "Sqlite based key/value cache with namespacing."
 
   def project do
     [
       app: :sqlcache,
-      version: "0.1.0",
+      source_url: @github_url,
+      version: @version,
+      description: @description,
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package()
     ]
   end
 
@@ -19,10 +25,22 @@ defmodule Sqlcache.MixProject do
     ]
   end
 
+  defp package do
+    [
+      files: ~w(lib mix.exs README* CHANGELOG*),
+      licenses: ["MIT"],
+      links: %{
+        "Github" => @github_url,
+        "Changelog" => "#{@github_url}/blob/main/CHANGELOG.md"
+      }
+    ]
+  end
+
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:exqlite, "~> 0.13"}
+      {:exqlite, "~> 0.13"},
+      {:ex_doc, "~> 0.29", only: :dev, runtime: false}
     ]
   end
 end
