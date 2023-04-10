@@ -2,7 +2,6 @@ defmodule SqlcacheTest do
   use ExUnit.Case
   doctest Sqlcache
 
-
   describe "basic run" do
     test "works" do
       assert :ok == Sqlcache.clear_kind("test")
