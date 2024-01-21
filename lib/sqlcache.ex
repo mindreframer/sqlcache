@@ -34,12 +34,14 @@ defmodule Sqlcache do
     v = Compressor.compress(v)
     ts = DateTime.utc_now() |> DateTime.to_unix(:microsecond)
 
-    query("insert or replace into cache(key, value, kind, ts) values (?, ?, ?, ?)", [
-      k,
-      v,
-      kind,
-      ts
-    ])
+    case query("insert or replace into cache(key, value, kind, ts) values (?, ?, ?, ?)", [
+           k,
+           v,
+           kind,
+           ts
+         ]) do
+      {:ok, [], []} -> :ok
+    end
   end
 
   def get(kind, k) do
