@@ -16,8 +16,8 @@ defmodule Sqlcache do
 
   def init_schema(conn) do
     [
-      "create table if not exists cache (key string primary key, value text, kind text, ts text)",
-      "create index if not exists cache_kind_idx on cache(kind);"
+      "create table if not exists cache (ns string, key string, value string, ts string, PRIMARY KEY ( ns, key))",
+      "create index if not exists cache_ns_idx on cache(ns);"
     ]
     |> Enum.each(fn stmt -> :ok = Exqlite.Sqlite3.execute(conn.db, stmt) end)
   end
@@ -30,35 +30,37 @@ defmodule Sqlcache do
     GenServer.start_link(__MODULE__, arg, name: __MODULE__)
   end
 
-  def put(kind, k, v) do
-    v = Compressor.compress(v)
+  def put(ns, key, value) do
+    value = Compressor.compress(value)
     ts = DateTime.utc_now() |> DateTime.to_unix(:microsecond)
 
-    case query("insert or replace into cache(key, value, kind, ts) values (?, ?, ?, ?)", [
-           k,
-           v,
-           kind,
+    case query("insert or replace into cache(ns, key, value, ts) values (?, ?, ?, ?)", [
+           ns,
+           key,
+           value,
            ts
          ]) do
       {:ok, []} -> :ok
     end
   end
 
-  def get(kind, k) do
-    case query("select value from cache where key =  ? and kind = ?", [k, kind]) do
+  def get(ns, key) do
+    case query("select value from cache where ns =  ? and key = ?", [ns, key]) do
       {:ok, []} -> {:error, nil}
       {:ok, [%{"value" => val}]} -> {:ok, Compressor.uncompress(val)}
     end
   end
 
-  def del(kind, k) do
-    case query("delete from cache where key =  ? and kind = ?", [k, kind]) do
+  def del(ns, key) do
+    case query("delete from cache where ns =  ? and key = ?", [ns, key]) do
       {:ok, []} -> :ok
     end
   end
 
-  def clear_kind(kind) do
-    case query("delete from cache where kind = ?", [kind]) do
+  def clear_kind(ns), do: clear_namespace(ns)
+
+  def clear_namespace(ns) do
+    case query("delete from cache where ns = ?", [ns]) do
       {:ok, []} ->
         :ok
     end
@@ -76,7 +78,7 @@ defmodule Sqlcache do
     end
   end
 
-  def as_maps(rows, columns) do
+  defp as_maps(rows, columns) do
     rows
     |> Enum.map(fn row ->
       Enum.zip(columns, row) |> Enum.into(%{})
