@@ -34,38 +34,39 @@ defmodule Sqlcache do
     v = Compressor.compress(v)
     ts = DateTime.utc_now() |> DateTime.to_unix(:microsecond)
 
-    Basic.exec(conn(), "insert or replace into cache(key, value, kind, ts) values (?, ?, ?, ?)", [
+    query("insert or replace into cache(key, value, kind, ts) values (?, ?, ?, ?)", [
       k,
       v,
       kind,
       ts
     ])
-    |> Basic.rows()
   end
 
   def get(kind, k) do
-    case Basic.exec(conn(), "select value from cache where key =  ? and kind = ?", [k, kind])
-         |> Basic.rows() do
+    case query("select value from cache where key =  ? and kind = ?", [k, kind]) do
       {:ok, [], ["value"]} -> {:error, nil}
       {:ok, [[val]], ["value"]} -> {:ok, Compressor.uncompress(val)}
     end
   end
 
   def del(kind, k) do
-    case Basic.exec(conn(), "delete from cache where key =  ? and kind = ?", [k, kind])
-         |> Basic.rows() do
+    case query("delete from cache where key =  ? and kind = ?", [k, kind]) do
       {:ok, [], []} -> :ok
     end
   end
 
   def clear_kind(kind) do
-    case Basic.exec(conn(), "delete from cache where kind = ?", [kind]) |> Basic.rows() do
+    case query("delete from cache where kind = ?", [kind]) do
       {:ok, [], []} ->
         :ok
     end
   end
 
   def debug() do
-    Basic.exec(conn(), "select * from cache limit 100") |> Basic.rows()
+    query("select * from cache limit 100")
+  end
+
+  defp query(sql, args \\ []) do
+    Basic.exec(conn(), sql, args) |> Basic.rows()
   end
 end
