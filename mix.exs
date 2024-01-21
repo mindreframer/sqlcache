@@ -39,7 +39,7 @@ defmodule Sqlcache.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:exqlite, "~> 0.13"},
+      {:exqlite, "~> 0.19"},
       {:ex_doc, "~> 0.29", only: :dev, runtime: false}
     ]
   end
