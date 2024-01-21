@@ -40,26 +40,26 @@ defmodule Sqlcache do
            kind,
            ts
          ]) do
-      {:ok, [], []} -> :ok
+      {:ok, []} -> :ok
     end
   end
 
   def get(kind, k) do
     case query("select value from cache where key =  ? and kind = ?", [k, kind]) do
-      {:ok, [], ["value"]} -> {:error, nil}
-      {:ok, [[val]], ["value"]} -> {:ok, Compressor.uncompress(val)}
+      {:ok, []} -> {:error, nil}
+      {:ok, [%{"value" => val}]} -> {:ok, Compressor.uncompress(val)}
     end
   end
 
   def del(kind, k) do
     case query("delete from cache where key =  ? and kind = ?", [k, kind]) do
-      {:ok, [], []} -> :ok
+      {:ok, []} -> :ok
     end
   end
 
   def clear_kind(kind) do
     case query("delete from cache where kind = ?", [kind]) do
-      {:ok, [], []} ->
+      {:ok, []} ->
         :ok
     end
   end
@@ -68,7 +68,18 @@ defmodule Sqlcache do
     query("select * from cache limit 100")
   end
 
-  defp query(sql, args \\ []) do
-    Basic.exec(conn(), sql, args) |> Basic.rows()
+  def query(sql, args \\ []) do
+    res = Basic.exec(conn(), sql, args) |> Basic.rows()
+
+    case res do
+      {:ok, columns, rows} -> {:ok, as_maps(columns, rows)}
+    end
+  end
+
+  def as_maps(rows, columns) do
+    rows
+    |> Enum.map(fn row ->
+      Enum.zip(columns, row) |> Enum.into(%{})
+    end)
   end
 end
