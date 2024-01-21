@@ -26,3 +26,5 @@ data/
 
 # Temporary files, for example, from tests.
 /tmp/
+
+sqlcache_data

@@ -4,6 +4,6 @@ defmodule Sqlcache.Config do
   end
 
   def default_datadir do
-    Path.join(rootdir(), "data/sqlcache")
+    Path.join(rootdir(), "sqlcache_data")
   end
 end
