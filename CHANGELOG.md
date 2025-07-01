@@ -13,3 +13,8 @@
 ### First release
 
 - Published on hex.pm
+
+## Unreleased
+
+- Added comprehensive test suite for Sqlcache.Wrapper, including cache behavior and error handling
+- Documented Sqlcache.Wrapper in README with usage example and explanation

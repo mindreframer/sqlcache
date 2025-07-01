@@ -33,6 +33,37 @@ config :sqlcache, rootdir: "/tmp/sqlcache"
 {:error, nil} == Sqlcache.get("test", "a")
 ```
 
+## Sqlcache.Wrapper: Function Caching Macro
+
+`Sqlcache.Wrapper` provides a macro for easy function result caching, with namespace support and cache deletion helpers.
+
+### Example
+
+```elixir
+defmodule MyApp.UsersCached do
+  use Sqlcache.Wrapper, namespace: "user"
+
+  # This function's result will be cached by argument
+  defcached get_user(id) do
+    MyApp.Users.get_user(id)
+  end
+
+  # Remove a specific cached value
+  def remove_from_cache(id) do
+    del(:get_user, [id])
+  end
+end
+
+# Usage:
+MyApp.UsersCached.get_user(123) # Calls and caches
+MyApp.UsersCached.get_user(123) # Returns cached result
+MyApp.UsersCached.remove_from_cache(123) # Removes from cache
+```
+
+- The macro `defcached` wraps your function to cache its result by arguments.
+- Use `del/2` to remove a cached value for specific arguments.
+- Namespace is configurable per module for cache separation.
+
 ## Installation
 
 The package can be installed by adding `sqlcache` to your list of dependencies in `mix.exs`:
