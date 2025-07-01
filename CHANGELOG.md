@@ -1,3 +1,9 @@
+## v1.1.0 (2025-07-01)
+
+- Added comprehensive test suite for Sqlcache.Wrapper, including cache behavior and error handling
+- Documented Sqlcache.Wrapper in README with usage example and explanation
+
+
 ## v1.0.0 (2024-01-21)
 
 - 207597f Feat: make primary key namespace + key (BREAKING CHANGE)
@@ -13,8 +19,3 @@
 ### First release
 
 - Published on hex.pm
-
-## Unreleased
-
-- Added comprehensive test suite for Sqlcache.Wrapper, including cache behavior and error handling
-- Documented Sqlcache.Wrapper in README with usage example and explanation

@@ -1,7 +1,7 @@
 defmodule Sqlcache.MixProject do
   use Mix.Project
   @github_url "https://github.com/mindreframer/sqlcache"
-  @version "1.0.0"
+  @version "1.1.0"
   @description "Sqlite based key/value cache with namespacing."
 
   def project do
