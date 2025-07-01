@@ -71,7 +71,7 @@ The package can be installed by adding `sqlcache` to your list of dependencies i
 ```elixir
 def deps do
   [
-    {:sqlcache, "~> 0.1.0"}
+    {:sqlcache, "~> 1.1"}
   ]
 end
 ```
