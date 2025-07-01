@@ -25,9 +25,9 @@ config :sqlcache, rootdir: "/tmp/sqlcache"
 
 ```elixir
 :ok == Sqlcache.clear_kind("test")
-{:ok, [], []} == Sqlcache.put("test", "a", 1)
+:ok == Sqlcache.put("test", "a", 1)
 {:ok, 1} == Sqlcache.get("test", "a")
-{:ok, [], []} == Sqlcache.put("test", "a", %{a: 1, b: 2})
+:ok == Sqlcache.put("test", "a", %{a: 1, b: 2})
 {:ok, %{a: 1, b: 2}} == Sqlcache.get("test", "a")
 :ok == Sqlcache.clear_kind("test")
 {:error, nil} == Sqlcache.get("test", "a")
